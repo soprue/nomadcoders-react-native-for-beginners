@@ -73,10 +73,20 @@ export default function App() {
                     </View>
                 ) : (
                     days.map((day, index) => (
-                        <View style={styles.day} key={index}>
-                            <Text style={styles.temp}>
-                                {parseFloat(day.main.temp).toFixed(1)}
-                            </Text>
+                        <View key={index} style={styles.day}>
+                            <View
+                                style={{
+                                    width: "100%",
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                }}
+                            >
+                                <Text style={styles.temp}>
+                                    {parseFloat(day.main.temp).toFixed(1)}
+                                </Text>
+                            </View>
+
                             <Text style={styles.description}>
                                 {day.weather[0].main}
                             </Text>
@@ -104,21 +114,32 @@ const styles = StyleSheet.create({
     cityName: {
         fontSize: 48,
         fontWeight: "600",
+        color: "white",
     },
     weather: {},
     day: {
         width: SCREEN_SIZE,
-        alignItems: "center",
+        alignItems: "flex-start",
+        paddingHorizontal: 20,
     },
     temp: {
         marginTop: 50,
-        fontSize: 150,
+        fontSize: 100,
+        fontWeight: "600",
+        color: "white",
     },
     description: {
-        marginTop: -30,
-        fontSize: 60,
+        width: "100%",
+        marginTop: -10,
+        fontSize: 30,
+        fontWeight: "500",
+        color: "white",
     },
     tinyText: {
-        fontSize: 20,
+        width: "100%",
+        marginTop: -5,
+        fontSize: 25,
+        fontWeight: "500",
+        color: "white",
     },
 });
