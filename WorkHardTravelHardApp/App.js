@@ -9,23 +9,20 @@ import {
     TextInput,
     ScrollView,
 } from "react-native";
+import { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { theme } from "./colors";
-import { useState } from "react";
+
+const STORAGE_KEY = "@toDos";
 
 export default function App() {
     const [working, setWorking] = useState(true);
     const [text, setText] = useState("");
     const [toDos, setToDos] = useState({});
 
-    const addToDo = () => {
-        if (text === "") {
-            return;
-        }
-
-        const newToDos = { ...toDos, [Date.now()]: { text, working } };
-        setToDos(newToDos);
-        setText("");
-    };
+    useEffect(() => {
+        loadToDos();
+    }, []);
 
     const travel = () => {
         setWorking(false);
@@ -35,6 +32,28 @@ export default function App() {
     };
 
     const onChangeText = (payload) => setText(payload);
+
+    const addToDo = async () => {
+        if (text === "") {
+            return;
+        }
+
+        const newToDos = { ...toDos, [Date.now()]: { text, working } };
+        setToDos(newToDos);
+        await saveToDos(newToDos);
+        setText("");
+    };
+    const saveToDos = async (toSave) => {
+        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+    };
+    const loadToDos = async () => {
+        const s = await AsyncStorage.getItem(STORAGE_KEY);
+        try {
+            setToDos(JSON.parse(s));
+        } catch (e) {
+            console.error(e);
+        }
+    };
 
     return (
         <View style={styles.container}>
