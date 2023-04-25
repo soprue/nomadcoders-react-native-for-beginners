@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { Fontisto } from "@expo/vector-icons";
+import { AntDesign, Fontisto, MaterialIcons } from "@expo/vector-icons";
 import {
     StyleSheet,
     Text,
@@ -45,7 +45,10 @@ export default function App() {
             return;
         }
 
-        const newToDos = { ...toDos, [Date.now()]: { text, working } };
+        const newToDos = {
+            ...toDos,
+            [Date.now()]: { text, working, complete: false },
+        };
         setToDos(newToDos);
         await saveToDos(newToDos);
         setText("");
@@ -57,6 +60,7 @@ export default function App() {
         let typePayload = await AsyncStorage.getItem(STORAGE_TYPE);
         let toDoPayload = await AsyncStorage.getItem(STORAGE_KEY);
         try {
+            console.log(toDoPayload);
             typePayload = JSON.parse(typePayload);
             setWorking(toDoPayload != null ? typePayload.type : true);
 
@@ -82,6 +86,12 @@ export default function App() {
             },
         ]);
         return;
+    };
+    const completeToDos = async (key) => {
+        const newToDos = { ...toDos };
+        newToDos[key].complete = !newToDos[key].complete;
+        setToDos(newToDos);
+        await saveToDos(newToDos);
     };
 
     return (
@@ -125,16 +135,53 @@ export default function App() {
                 {Object.keys(toDos).map((key) =>
                     toDos[key].working === working ? (
                         <View style={styles.toDo} key={key}>
-                            <Text style={styles.toDoText}>
-                                {toDos[key].text}
-                            </Text>
-                            <TouchableOpacity onPress={() => deleteToDos(key)}>
-                                <Fontisto
-                                    name="trash"
-                                    size={18}
-                                    color={theme.gray}
-                                />
-                            </TouchableOpacity>
+                            <View style={styles.toDoInner}>
+                                <TouchableOpacity
+                                    onPress={() => completeToDos(key)}
+                                >
+                                    <AntDesign
+                                        name={
+                                            toDos[key].complete
+                                                ? "checksquare"
+                                                : "checksquareo"
+                                        }
+                                        size={18}
+                                        color="white"
+                                    />
+                                </TouchableOpacity>
+                                <Text
+                                    style={{
+                                        ...styles.toDoText,
+                                        textDecorationLine: toDos[key].complete
+                                            ? "line-through"
+                                            : "none",
+                                    }}
+                                >
+                                    {toDos[key].text}
+                                </Text>
+                            </View>
+
+                            <View style={styles.toDoInner}>
+                                <TouchableOpacity
+                                    style={{ alignItems: "flex-end" }}
+                                >
+                                    <MaterialIcons
+                                        name="edit"
+                                        size={22}
+                                        color={theme.gray}
+                                    />
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={() => deleteToDos(key)}
+                                    style={{ marginLeft: 5 }}
+                                >
+                                    <Fontisto
+                                        name="trash"
+                                        size={18}
+                                        color={theme.gray}
+                                    />
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     ) : null
                 )}
@@ -177,9 +224,15 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between",
     },
+    toDoInner: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+    },
     toDoText: {
         color: "white",
         fontSize: 16,
         fontWeight: "500",
+        marginLeft: 10,
     },
 });
