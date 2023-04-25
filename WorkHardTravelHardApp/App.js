@@ -16,6 +16,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { theme } from "./colors";
 
 const STORAGE_KEY = "@toDos";
+const STORAGE_TYPE = "@type";
 
 export default function App() {
     const [working, setWorking] = useState(true);
@@ -26,11 +27,15 @@ export default function App() {
         loadToDos();
     }, []);
 
-    const travel = () => {
+    const travel = async () => {
         setWorking(false);
+        const newType = { ["type"]: false };
+        await AsyncStorage.setItem(STORAGE_TYPE, JSON.stringify(newType));
     };
-    const work = () => {
+    const work = async () => {
         setWorking(true);
+        const newType = { ["type"]: true };
+        await AsyncStorage.setItem(STORAGE_TYPE, JSON.stringify(newType));
     };
 
     const onChangeText = (payload) => setText(payload);
@@ -49,10 +54,14 @@ export default function App() {
         await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
     };
     const loadToDos = async () => {
-        const jsonPayload = await AsyncStorage.getItem(STORAGE_KEY);
+        let typePayload = await AsyncStorage.getItem(STORAGE_TYPE);
+        let toDoPayload = await AsyncStorage.getItem(STORAGE_KEY);
         try {
-            return jsonPayload != null
-                ? setToDos(JSON.parse(jsonPayload))
+            typePayload = JSON.parse(typePayload);
+            setWorking(toDoPayload != null ? typePayload.type : true);
+
+            return toDoPayload != null
+                ? setToDos(JSON.parse(toDoPayload))
                 : null;
         } catch (e) {
             console.error(e);
