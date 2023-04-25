@@ -101,39 +101,35 @@ export default function App() {
                 </TouchableOpacity>
             </View>
 
-            <View>
-                <TextInput
-                    onSubmitEditing={addToDo}
-                    onChangeText={onChangeText}
-                    returnKeyType="done"
-                    value={text}
-                    placeholder={
-                        working ? "Add a To Do" : "Where do you want to go?"
-                    }
-                    style={styles.input}
-                />
+            <TextInput
+                onSubmitEditing={addToDo}
+                onChangeText={onChangeText}
+                returnKeyType="done"
+                value={text}
+                placeholder={
+                    working ? "Add a To Do" : "Where do you want to go?"
+                }
+                style={styles.input}
+            />
 
-                <ScrollView>
-                    {Object.keys(toDos).map((key) =>
-                        toDos[key].working === working ? (
-                            <View style={styles.toDo} key={key}>
-                                <Text style={styles.toDoText}>
-                                    {toDos[key].text}
-                                </Text>
-                                <TouchableOpacity
-                                    onPress={() => deleteToDos(key)}
-                                >
-                                    <Fontisto
-                                        name="trash"
-                                        size={18}
-                                        color={theme.gray}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                        ) : null
-                    )}
-                </ScrollView>
-            </View>
+            <ScrollView>
+                {Object.keys(toDos).map((key) =>
+                    toDos[key].working === working ? (
+                        <View style={styles.toDo} key={key}>
+                            <Text style={styles.toDoText}>
+                                {toDos[key].text}
+                            </Text>
+                            <TouchableOpacity onPress={() => deleteToDos(key)}>
+                                <Fontisto
+                                    name="trash"
+                                    size={18}
+                                    color={theme.gray}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    ) : null
+                )}
+            </ScrollView>
         </View>
     );
 }
