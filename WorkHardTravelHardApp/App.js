@@ -49,9 +49,11 @@ export default function App() {
         await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
     };
     const loadToDos = async () => {
-        const s = await AsyncStorage.getItem(STORAGE_KEY);
+        const jsonPayload = await AsyncStorage.getItem(STORAGE_KEY);
         try {
-            setToDos(JSON.parse(s));
+            return jsonPayload != null
+                ? setToDos(JSON.parse(jsonPayload))
+                : null;
         } catch (e) {
             console.error(e);
         }
