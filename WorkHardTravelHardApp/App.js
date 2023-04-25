@@ -163,15 +163,6 @@ export default function App() {
 
                             <View style={styles.toDoInner}>
                                 <TouchableOpacity
-                                    style={{ alignItems: "flex-end" }}
-                                >
-                                    <MaterialIcons
-                                        name="edit"
-                                        size={22}
-                                        color={theme.gray}
-                                    />
-                                </TouchableOpacity>
-                                <TouchableOpacity
                                     onPress={() => deleteToDos(key)}
                                     style={{ marginLeft: 5 }}
                                 >
